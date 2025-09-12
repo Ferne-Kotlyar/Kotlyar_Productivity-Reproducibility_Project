@@ -1,0 +1,29 @@
+---
+title: "Manuscript"
+author: Ferne Kotlyar
+output: pdf_document
+date: "`r Sys.Date()`"
+bibliography: CIEE_Course.bib
+csl: Nature.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Introduction
+
+Trying to insert references [@bettsPollinatorRecognitionKeystone2015]
+
+# Methods
+
+Example equation $a^2 + b^2 = c^2$
+
+# Results
+
+```{r}
+library(palmerpenguins)
+library(ggplot2)
+```
+
+# References
