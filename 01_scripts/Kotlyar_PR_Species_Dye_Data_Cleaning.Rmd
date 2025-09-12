@@ -1,0 +1,82 @@
+---
+title: "Data Cleaning"
+author: Ferne Kotlyar
+output: pdf_document
+date: "`r Sys.Date()`"
+---
+
+# 1.0 Load Packages and Import Data
+
+## 1.1 Load Packages
+
+```{r}
+library(ddimport) # for importing data to the correct folder
+library(readxl) # for reading excel files
+library(dplyr) # for data wrangling
+library(ggplot2) # for data visualization
+library(skimr) # for data summary
+library(tidyverse) # for data manipulation and visualization
+```
+
+## 1.2 Import Most Recent Data into the 00_rawdata Folder
+
+ND = Nectar Dye
+
+```{r}
+import_data_from_disk(data_source_path = "/Users/fernekotlyar/Desktop/UofT/Field_Work/Field_Data/Nectar_Dye/Species_Flower_Dye_Exp.xlsx", data_target_path = "/Users/fernekotlyar/Desktop/UofT/Courses/CIEE_Courses/Kotlyar_Productivity-Reproducibility_Project/00_rawdata/Kotlyar_PR_Species_Nectar_Dye_Raw.xlsx")
+
+species_ND <- read_excel("../00_rawdata/Kotlyar_PR_Species_Nectar_Dye_Raw.xlsx", na = "N/A")
+```
+
+# 2.0 Quick Exploration of Data
+
+## 2.1 Tables of Data
+
+```{r}
+summary(species_ND) # quick summary
+skim(species_ND) # in-depth summary
+```
+
+## 2.2 Explore Response Variables
+
+Response variables are dye_on_stigma and dye_on_anthers.
+
+```{r}
+table(species_ND$species, species_ND$dye_on_stigma)
+table(species_ND$species, species_ND$dye_on_anthers)
+```
+
+**Notes**
+
+-   There is only 1 "maybe" in the dye_on_stigma table.
+    -   I double checked the photo for that individual case and saw that there was dye close to the top of the style, but not on the tip of the stigma.
+    -   I decided to convert this observation to "little" so that I can remove the entire column.
+-   There are only 2 "Y" (yes's) in the dye_on_anthers table.
+    -   I will create a binary yes/no column for presence of dye for both anthers and stigma separately to address the semi-subjective categories of little, lots, yes, no.
+
+# 3.0 Clean Data
+
+## 3.1 Clean Data
+
+```{r}
+# Combine species and sex to make unique bill column
+species_ND$bill_type <- paste(species_ND$species, species_ND$sex, sep = "-")
+
+# Convert "M" (maybe) to "little"
+species_ND <- species_ND %>% mutate(dye_on_stigma = recode(dye_on_stigma, "M" = "little"))
+
+# Make a new column for presence/absence of dye on stigma
+species_ND$dye_on_stigma_binary <- ifelse(species_ND$dye_on_stigma %in% c("little", "lots"), "Yes", "No")
+
+# Make a new column for presence/absence of dye on anthers
+species_ND$dye_on_anthers_binary <- ifelse(species_ND$dye_on_anthers %in% c("little", "lots", "Y"), "Yes", "No")
+```
+
+# 4.0 Export Cleaned Data
+
+## 4.1 Export as CSV
+
+```{r}
+# Save cleaned data to 02_outdata folder
+write.csv(species_ND, "../02_outdata/Kotlyar_PR_Species_Nectar_Dye_Clean.csv", row.names = FALSE)
+```
