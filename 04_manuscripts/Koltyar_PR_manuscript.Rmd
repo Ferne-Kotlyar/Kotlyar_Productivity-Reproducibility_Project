@@ -19,9 +19,23 @@ Inserting references test[@bettsPollinatorRecognitionKeystone2015][@kressSelfInc
 
 Example equation: $a^2 + b^2 = c^2$
 
+### Quick Power Analysis
+```{r}
+library(pwr)
+
+pwr.chisq.test(
+  w = 0.5,       # effect size (small=0.1, medium=0.3, large=0.5)
+  df = 1,        # degrees of freedom
+  sig.level = 0.05, 
+  power = 0.95)
+
+```
+
+
 # Results
 
 ```{r}
+library(prereg)
 library(palmerpenguins)
 library(ggplot2)
 ```
