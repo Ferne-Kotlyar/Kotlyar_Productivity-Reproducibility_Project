@@ -1,5 +1,5 @@
 ---
-title           : "Preregistration for the CIEE Productivity and Reproducibility Course"
+title           : "Species-Specific Differences in Stigma Contact: Evidence from Slow-Motion Videos and 3D Printed Bill Experiments in *Heliconia tortuosa*"
 shorttitle      : "Preregistration"
 date            : "`r Sys.setlocale('LC_TIME', 'C'); format(Sys.time(), '%d\\\\. %B %Y')`"
 
@@ -261,8 +261,6 @@ Example: If a subject does not complete any of the three indices of tastiness, t
 ```
 
 If the stigma is missing, it will not be included in the analysis.
-
-# References
 
 ## 
 
