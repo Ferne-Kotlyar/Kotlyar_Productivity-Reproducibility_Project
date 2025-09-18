@@ -20,12 +20,4 @@ This project is being completed as part of the CIEE (Canadian Institute of Ecolo
 
 **File naming conventions:**
 
--   *Manuscripts:* LastName_Project_File-contents_Version.file-type
-
--   *Figures and plots:* LastName_Project_Figure-title_Version.file-type
-
--   *Analysis:* LastName_Project_Analysis_Version.file-type
-
--   *Data:* LastName_Project_Data-file-description.file-type
-
-***Note:** Within folders, the project will be called "PR" instead of "Productivity and Reproducibility"*
+LastName_Course_FileContent.file-type
