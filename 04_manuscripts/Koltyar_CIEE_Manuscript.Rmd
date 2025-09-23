@@ -13,13 +13,12 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 # Introduction
 
-Inserting references test[@bettsPollinatorRecognitionKeystone2015][@kressSelfIncompatibilityCentralAmerican1983]
+According to 67 slow-motion videos (240 fps) of wild Heliconia tortuosa visitors, specialized hummingbirds appear to displace nectar and deposit it on the stigma as they exit the flower. This appears to occur less frequently with non-specialized hummingbirds. The goal is to compare the likelihood of nectar deposition on the stigma between specialized and non-specialized hummingbirds. To test this species-specific difference, we conducted nectar dye experiments using 3D printed bill replicas of H. tortuosa’s primary visitors, two specialized (traplining) hummingbirds: green hermits, Phaethornis guy, and violet sabrewings, Campylopterus hemileucurus, and two non-specialized (territorial) hummingbirds: rufous-tailed, Amazilia tzacatl and crowned woodnymphs, Thalurania colombica. In these dye experiments, we inject flowers with dye, use the 3D printed bills, then measure the likelihood of dye deposition on floral anthers and stigma (response = presence/absence of dye). @betts2015 @stiles1975 @kress1983
 
 # Methods
 
-Example equation: $a^2 + b^2 = c^2$
+### Power Analysis
 
-### Quick Power Analysis
 ```{r}
 library(pwr)
 
@@ -31,13 +30,12 @@ pwr.chisq.test(
 
 ```
 
+### Main Analysis
+
+Use cleaned data to analyses results. Use chi-square test and fishers extact test.
 
 # Results
 
-```{r}
-library(prereg)
-library(palmerpenguins)
-library(ggplot2)
-```
+Coming soon...
 
 # References
