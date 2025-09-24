@@ -13,11 +13,13 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 # Introduction
 
-According to 67 slow-motion videos (240 fps) of wild Heliconia tortuosa visitors, specialized hummingbirds appear to displace nectar and deposit it on the stigma as they exit the flower. This appears to occur less frequently with non-specialized hummingbirds. The goal is to compare the likelihood of nectar deposition on the stigma between specialized and non-specialized hummingbirds. To test this species-specific difference, we conducted nectar dye experiments using 3D printed bill replicas of H. tortuosa’s primary visitors, two specialized (traplining) hummingbirds: green hermits, Phaethornis guy, and violet sabrewings, Campylopterus hemileucurus, and two non-specialized (territorial) hummingbirds: rufous-tailed, Amazilia tzacatl and crowned woodnymphs, Thalurania colombica. In these dye experiments, we inject flowers with dye, use the 3D printed bills, then measure the likelihood of dye deposition on floral anthers and stigma (response = presence/absence of dye). @betts2015 @stiles1975 @kress1983
+According to 67 slow-motion videos (240 fps) of wild *Heliconia tortuosa* visitors, specialized hummingbirds appear to displace nectar and deposit it on the stigma as they exit the flower. This appears to occur less frequently with non-specialized hummingbirds. The goal is to compare the likelihood of nectar deposition on the stigma between specialized and non-specialized hummingbirds. To test this species-specific difference, we conducted nectar dye experiments using 3D printed bill replicas of *H. tortuosa*’s primary visitors [@betts2015; @leimberger2023], two specialized (traplining) hummingbirds: green hermits (*Phaethornis guy)*, and violet sabrewings (*Campylopterus hemileucurus)*, and two non-specialized (territorial) hummingbirds: rufous-tailed, (*Amazilia tzacatl*) and crowned woodnymphs (*Thalurania colombica*). In these dye experiments, we inject flowers with dye, use the 3D printed bills, then measure the likelihood of dye deposition on floral anthers and stigma (response = presence/absence of dye).
 
 # Methods
 
-### Power Analysis
+## Preliminary Power Analysis
+
+Calculating the sample size needed for data collection.
 
 ```{r}
 library(pwr)
@@ -30,12 +32,172 @@ pwr.chisq.test(
 
 ```
 
-### Main Analysis
+Assuming there will be a large effect (w=0.5), we will need a sample size of at least 52 flowers.
 
-Use cleaned data to analyses results. Use chi-square test and fishers extact test.
+## Short Description
+
+**Study Location:** This study was conducted at the Las Cruces Biological Station in southern Costa Rica (Coto Brus Canton, Puntarenas Province) @stiles1975.
+
+**Data Collection:** Open *H. tortuosa* flowers were collected from the Las Cruces Biological Station grounds. \~0.05 mL of fuchsin dye was injected into the base of the corolla tube right above the nectar chamber of *H. tortuosa* flowers @kress1983. We then inserted and extracted the bill replicas, while mimicking hummingbird behaviour, as per the slow-motion videos. Immediately after removing the bill from the flower, the anthers and stigma were placed under a field microscope (Carson MicroFlip 100x-250x LED), and the presence (or absence) of dye was recorded on the anthers and stigma separately. Each species was used 13-14 times, for a total of n = 55.
+
+## Data Overview
+
+The final results table will have a two by two factorial comparison for anthers and stigma, separately, where each table will look like this:
+
+|                 | Yes | No  |
+|-----------------|-----|-----|
+| **Territorial** | \-  | \-  |
+| **Trapliner**   | \-  | \-  |
 
 # Results
 
-Coming soon...
+## Display Contingency Tables
+
+```{r}
+# Load packages
+library(dplyr)
+library(tidyr)
+
+# Load cleaned data from the 02_outdata folder
+ND_clean <- read.csv("../02_outdata/Kotlyar_CIEE_Species_Nectar_Dye_Clean.csv")
+
+# Quick look at the data
+print("Anthers")
+table(ND_clean$specialization, ND_clean$dye_on_anthers_binary)
+
+print("Stigma")
+table(ND_clean$specialization, ND_clean$dye_on_stigma_binary)
+```
+
+## Chi-Squared Analysis
+
+```{r}
+# Anthers
+chisq.test(table(ND_clean$specialization, ND_clean$dye_on_anthers_binary))
+
+# Stigma
+chisq.test(table(ND_clean$specialization, ND_clean$dye_on_stigma_binary))
+```
+
+All results are significant, suggesting that trapliners and territorial birds deposit different amount of nectar on both the anthers and stigma of *H. tortuosa* flowers.
+
+## Fisher Exact Test
+
+I will also use the Fisher Exact Test due to the small count of territorials placing dye on the stigma in the contingency table.
+
+```{r}
+# Try with fishers exact test 
+fisher.test(table(ND_clean$specialization, ND_clean$dye_on_anthers_binary))
+fisher.test(table(ND_clean$specialization, ND_clean$dye_on_stigma_binary))
+```
+
+Once again, all results are significant, with large odd ratios. However, the confidence intervals are extremely large as well.
+
+## Plot Results
+
+### Anthers Graph
+
+Although the stats were done based on hummingbird specialization, the graph will be shown based on species to include more information.
+
+```{r}
+library(ggplot2)
+library(ggtext)
+library(stringr)
+
+# Convert to data frame and calculate proportions
+ND_clean_anthers_table <- as.data.frame.matrix(table(ND_clean$species, ND_clean$dye_on_anthers_binary)) %>%
+  tibble::rownames_to_column("species") %>%
+  pivot_longer(cols = c("No", "Yes"), names_to = "response", values_to = "count") %>%
+  group_by(species) %>%
+  mutate(prop = count / sum(count),
+         ypos = rev(cumsum(rev(prop))) - prop / 2)
+
+# Set factor
+ND_clean_anthers_table$response <- factor(ND_clean_anthers_table$response, levels = c("No", "Yes"))
+ND_clean_anthers_table$species <- factor(ND_clean_anthers_table$species, levels = c("CRWO", "RTAH", "GREH", "VISA"))
+
+# Figure caption
+fig_caption_anthers <- str_wrap("**Figure 1.** Dye deposition on anthers based on *H. tortuosa'*s primary visitors. This includes two specialized (traplining) hummingbirds: GREH - green hermits (*Phaethornis guy*) and VISA - violet sabrewings, (*Campylopterus hemileucurus*) and two non-specialized (territorial) hummingbirds: RTAH - rufous-tailed, (*Amazilia tzacatl*) and CRWO - crowned woodnymphs (*Thalurania colombica*).")
+
+# Plot
+ND_clean_anthers_graph <-
+ggplot(ND_clean_anthers_table, aes(x = species, y = prop, fill = response, colour=species)) +
+  geom_bar(stat = "identity", size = 1) +
+  geom_text(aes(y = ypos, label = paste0("n=", count)), color = "white", size = 4) +
+  scale_fill_manual(values = c("Yes" = "#B7B79E", "No" = "#5B4445")) +
+  scale_colour_manual(values = c("CRWO" = "#1F1418", "RTAH" = "#1F1418", "GREH" = "#FF5C43", "VISA" = "#FF5C43")) +
+  labs(title = "Proportion of Dye on Anthers by Species",
+    x = "Species",
+    y = NULL,
+    fill = "Response",
+    caption = str_wrap(fig_caption_anthers)) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(size = 12),
+        plot.caption = element_markdown(hjust = 0)) + 
+  guides(colour = guide_legend(override.aes = list(fill = "white")))
+
+ND_clean_anthers_graph
+```
+
+### Stigma Graph
+
+This graph is repeated for the dye on stigma results.
+
+```{r}
+# Convert to data frame and calculate proportions
+ND_clean_stigma_table <- as.data.frame.matrix(table(ND_clean$species, ND_clean$dye_on_stigma_binary)) %>%
+  tibble::rownames_to_column("species") %>%
+  pivot_longer(cols = c("No", "Yes"), names_to = "response", values_to = "count") %>%
+  group_by(species) %>%
+  mutate(prop = count / sum(count),
+         ypos = rev(cumsum(rev(prop))) - prop / 2)
+
+# Set factor
+ND_clean_stigma_table$response <- factor(ND_clean_stigma_table$response, levels = c("No", "Yes"))
+ND_clean_stigma_table$species <- factor(ND_clean_stigma_table$species, levels = c("CRWO", "RTAH", "GREH", "VISA"))
+
+# Pot
+ND_clean_stigma_graph <-
+ggplot(ND_clean_stigma_table, aes(x = species, y = prop, fill = response, colour=species)) +
+  geom_bar(stat = "identity", size = 1) +
+  geom_text(aes(y = ypos, label = paste0("n=", count)), color = "white", size = 4) +
+  scale_fill_manual(values = c("Yes" = "#B7B79E", "No" = "#5B4445")) +
+  scale_colour_manual(values = c("CRWO" = "#1F1418", "RTAH" = "#1F1418", "GREH" = "#FF5C43", "VISA" = "#FF5C43")) +
+  labs(title = "Proportion of Dye on Stigma by Species",
+    x = "Species",
+    y = NULL,
+    fill = "Response",
+    caption = expression(paste("Dye deposition on stigma based on ", italic("H. tortuosa"), "'s primary visitors. This includes two specialized (traplining) hummingbirds: GREH - green hermits (", italic("Phaethornis guy"), ") and VISA - violet sabrewings, (", italic("Campylopterus hemileucurus"), ") and two non-specialized (territorial) hummingbirds: RTAH - rufous-tailed, (", italic("Amazilia tzacatl"), ") and CRWO - crowned woodnymphs (" , italic("Thalurania colombica"), ")."))) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(size = 12),
+        plot.caption = element_text(hjust = 0)) + 
+  guides(colour = guide_legend(override.aes = list(fill = "white")))
+
+ND_clean_stigma_graph
+```
+
+### Combined Graphs
+
+Here, we combine the graphs, then export the combined graph as a PNG into the 03_figures folder.
+
+```{r}
+library(ggpubr)
+
+ND_clean_combined <- 
+ggarrange(ND_clean_anthers_graph + labs(title = NULL) + theme(plot.margin = margin(t = 20, r = 5, b = 5, l = 5)),
+          ND_clean_stigma_graph + labs(title = NULL) + theme(plot.margin = margin(t = 20, r = 5, b = 5, l = 5)), 
+          labels = c("Anthers", "Stigma"), 
+          ncol = 2, 
+          common.legend = TRUE, 
+          legend = "bottom") 
+
+ND_clean_combined
+
+ggsave("ND_clean_combined.png", ND_clean_combined, bg="transparent", path="../03_figures", width = 8, height = 5)
+```
 
 # References

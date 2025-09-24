@@ -70,7 +70,7 @@ This question has a variety of possible answers. The key is for a researcher to 
 Example: We have a between subjects design with 1 factor (sugar by mass) with 4 levels. -->
 ```
 
-This will be am experimental study with a two by two factorial comparison for anthers and stigma, separately. Each table will look like this:
+This will be an experimental study with a two by two factorial comparison for anthers and stigma, separately. Each table will look like this:
 
 |                              | Yes | No  |
 |------------------------------|-----|-----|
