@@ -143,7 +143,17 @@ Our target sample size was 13 flowers per species, for a total of 52 flowers (26
 Example: We used the software program G*Power to conduct a power analysis. Our goal was to obtain .95 power to detect a medium effect size of .25 at the standard .05 alpha error probability. -->
 ```
 
-Since we visually observed this effect and we are now testing it experimentally, we expect there to be quite a large effect size. We used a power analysis (`pwr.chisq.test` from the pwr package) with a large effect size of .50 at the standard .05 alpha and .95 power, the desired sample size was 52.
+```{r}
+library(pwr)
+
+pwr.chisq.test(
+  w = 0.5,       # effect size (small=0.1, medium=0.3, large=0.5)
+  df = 1,        # degrees of freedom
+  sig.level = 0.05, 
+  power = 0.95)
+```
+
+Since we visually observed this effect and we are now testing it experimentally, we expect there to be a large effect size (w=0.5). We used a power analysis (`pwr.chisq.test` from the pwr package) with a large effect size of .50 at the standard .05 alpha and .95 power. We will need a sample size of at least 52 flowers. 
 
 ## Stopping rule
 
