@@ -79,7 +79,7 @@ fisher.test(table(ND_clean$specialization, ND_clean$dye_on_stigma_binary))
 
 Once again, all results are significant, with large odd ratios. However, the confidence intervals are extremely large as well.
 
-## Results
+# Results
 
 Although the stats were done based on hummingbird specialization, the graph will be shown based on species to include more information. The graphs below will be for the dye that lands on both the anthers and stigma based on the species. Then, we export the combined graph as a PNG into the 03_figures folder.
 

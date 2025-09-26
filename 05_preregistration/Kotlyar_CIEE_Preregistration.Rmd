@@ -153,7 +153,7 @@ pwr.chisq.test(
   power = 0.95)
 ```
 
-Since we visually observed this effect and we are now testing it experimentally, we expect there to be a large effect size (w=0.5). We used a power analysis (`pwr.chisq.test` from the pwr package) with a large effect size of .50 at the standard .05 alpha and .95 power. We will need a sample size of at least 52 flowers. 
+Since we visually observed this effect and we are now testing it experimentally, we expect there to be a large effect size (w=0.5). We used a power analysis (`pwr.chisq.test` from the pwr package) with a large effect size of .50 at the standard .05 alpha and .95 power. We will need a sample size of at least 52 flowers.
 
 ## Stopping rule
 
